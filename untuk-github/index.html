@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pergerakan Staf JTMK</title>
+<meta name="description" content="Papan Pergerakan Staf JTMK, Politeknik Balik Pulau: siapa di pejabat, HBH atau di luar hari ini.">
+<meta name="theme-color" content="#15803d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pergerakan">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6f4; --surface:#fff; --surface-2:#f6f8f7; --ink:#14201a; --ink-2:#3f4d45; --muted:#66746c; --line:#e1e8e4;
+  --brand-ink:#15803d; --brand-soft:#e3f5ea; --gold:#f2b705;
+  --good:#15803d; --good-soft:#dcfce7; --warn:#b45309; --warn-soft:#fef3c7; --bad:#b91c1c; --bad-soft:#fee2e2;
+  --shadow:0 1px 2px rgba(10,40,25,.06),0 10px 30px -12px rgba(10,40,25,.18);
+  --shadow-lg:0 2px 4px rgba(10,40,25,.06),0 24px 48px -16px rgba(10,40,25,.3);
+  --vh:100vh; --hdr-bg:rgba(243,246,244,.88);
+}
+:root[data-theme="dark"]{
+  --bg:#0c1511; --surface:#14211b; --surface-2:#1a2a22; --ink:#ecf6f0; --ink-2:#c6d6cc; --muted:#8fa498; --line:#25382e;
+  --brand-ink:#6ee7a0; --brand-soft:#173826; --hdr-bg:rgba(12,21,17,.88);
+  --good:#4ade80; --good-soft:#123222; --warn:#fbbf24; --warn-soft:#3a2a0c; --bad:#f87171; --bad-soft:#3b1414;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -12px rgba(0,0,0,.6);
+  --shadow-lg:0 2px 4px rgba(0,0,0,.3),0 24px 48px -16px rgba(0,0,0,.75);
+}
+@supports (height:100dvh){:root{--vh:100dvh}}
+/* PC (≥1200px): seluruh app diskala 80% (seperti zoom pelayar 80%). */
+@media (min-width:1200px){ html:not(.tv-on){--vh:125vh} html:not(.tv-on) .wrap{zoom:.8} }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.ic{width:20px;height:20px;flex:none}
+.wrap{min-height:var(--vh)}
+.hdr{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:10px 24px;padding-top:calc(10px + env(safe-area-inset-top));
+  background:var(--hdr-bg);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;margin-right:auto}
+.brand .lg{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none;background:linear-gradient(140deg,#16a34a,#0d9488);box-shadow:0 8px 18px -10px #16a34a}
+.brand .lg .ic{width:21px;height:21px}
+.brand b{display:block;font-size:16px;font-weight:800;line-height:1.15}
+.brand small{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--surface);border:1px solid var(--line);color:var(--ink-2);transition:all .2s}
+.tbtn:hover{color:var(--brand-ink);border-color:var(--brand-ink)}
+.hlink{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:12px;font-size:13px;font-weight:700;color:var(--ink-2);background:var(--surface);border:1px solid var(--line)}
+.hlink .ic{width:16px;height:16px}
+.inst{display:none;align-items:center;gap:7px;height:40px;padding:0 13px;border-radius:12px;font-size:13px;font-weight:800;color:#14532d;background:linear-gradient(140deg,#ffd54a,#f2b705);white-space:nowrap;flex:none}
+.inst.show{display:inline-flex}
+.inst .ic{width:17px;height:17px}
+/* fill-mode backwards (bukan both): selepas animasi tiada transform kekal, jadi bar tab tetap (fixed) di telefon ikut skrin */
+.view{max-width:1200px;margin:0 auto;padding:22px 24px 40px;animation:fadeUp .35s ease-out backwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.spin{width:36px;height:36px;border-radius:50%;border:3px solid var(--line);border-top-color:#16a34a;animation:spin 1s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:8px}
+.st .ic{width:13px;height:13px}
+.st.good{background:var(--good-soft);color:var(--good)} .st.warn{background:var(--warn-soft);color:var(--warn)} .st.bad{background:var(--bad-soft);color:var(--bad)}
+.logo{border-radius:13px;display:grid;place-items:center;font-weight:800;color:#fff;flex:none;background:linear-gradient(140deg,#16a34a,#0d9488)}
+.hint{margin:10px 2px 0;font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:160;background:#14201a;color:#fff;font-size:13.5px;font-weight:600;
+  padding:11px 18px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.3);transition:all .3s;pointer-events:none;max-width:calc(100vw - 24px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.upd{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:150;display:flex;align-items:center;gap:12px;
+  padding:10px 10px 10px 16px;border-radius:14px;background:#14201a;color:#fff;font-size:13.5px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.35);max-width:calc(100vw - 24px)}
+.upd button{padding:8px 12px;border-radius:10px;background:var(--gold);color:#14532d;font-weight:800}
+.mdl{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px}
+.mdl-bg{position:absolute;inset:0;background:rgba(5,20,12,.55);opacity:0;transition:opacity .2s}
+.mdl-box{position:relative;width:min(520px,100%);max-height:min(88vh,860px);display:flex;flex-direction:column;border-radius:20px;background:var(--surface);color:var(--ink);
+  box-shadow:0 30px 80px rgba(0,0,0,.4);overflow:hidden;transform:translateY(12px) scale(.98);opacity:0;transition:transform .22s,opacity .22s}
+.mdl.show .mdl-bg{opacity:1} .mdl.show .mdl-box{transform:none;opacity:1}
+.guide{padding:22px}
+.guide h2{margin:0 0 6px;font-size:19px}
+.guide ol{margin:12px 0 16px;padding-left:20px;display:grid;gap:10px;font-size:14px}
+.guide ol .ic{width:16px;height:16px;vertical-align:-3px;color:var(--brand-ink)}
+.guide .ok{width:100%;justify-content:center;display:inline-flex;padding:12px;border-radius:12px;background:#16a34a;color:#fff;font-weight:800}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+html.tv-on .hdr{display:none}
+html.tv-on .wrap{zoom:1}
+@media (max-width:620px){
+  .hdr{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top));gap:8px}
+  .brand small,.hlink span,.inst b{display:none}
+  .hlink,.inst{padding:0 11px}
+  .view{padding:14px 14px calc(96px + env(safe-area-inset-bottom))}
+  /* Tab papan menjadi bar navigasi berikon di bawah skrin */
+  .kb-tabs{position:fixed;left:0;right:0;bottom:0;z-index:45;border-radius:0!important;border:0!important;border-top:1px solid var(--line)!important;
+    padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important;background:var(--surface)!important;box-shadow:0 -8px 24px -12px rgba(10,40,25,.25)}
+  .toast,.upd{bottom:calc(86px + env(safe-area-inset-bottom))}
+  .mdl{padding:0;place-items:end stretch}
+  .mdl-box{width:100%!important;max-height:92vh;border-radius:20px 20px 0 0;transform:translateY(40px);padding-bottom:env(safe-area-inset-bottom)}
+}
+@media print{.hdr,.toast,.upd{display:none!important} .wrap{zoom:1!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="hdr">
+    <a class="brand" href="#/pergerakan"><span class="lg"><span data-ic="pin"></span></span><span><b>Pergerakan Staf</b><small>JTMK · Politeknik Balik Pulau</small></span></a>
+    <a class="hlink" id="eboardLink" href="#" target="_blank" rel="noopener" title="Buka eBOARD@JTMK" hidden><span data-ic="grid"></span><span>eBOARD</span></a>
+    <button class="inst" id="installBtn" title="Pasang sebagai aplikasi"><span data-ic="install"></span><b>Pasang App</b></button>
+    <button class="tbtn" id="themeBtn" aria-label="Tukar tema terang/gelap" title="Tukar tema"></button>
+  </header>
+  <main id="view"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+/* ===== Shell: pembantu yang digunakan oleh app.js, penghala, tema & PWA ===== */
+const ICONS = {
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  ext:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/>',
+  file:'<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8"/>',
+  doc:'<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M8 12h8M8 16h5"/>',
+  sheet:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M12 3v18"/>',
+  folder:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  cap:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  clip:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  cal:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  brief:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  checks:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/>',
+  building:'<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
+  award:'<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
+  fb:'<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+  plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+  chart:'<path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/>',
+  home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  route:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  video:'<path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2"/>',
+  image:'<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  org:'<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/>',
+  down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  hourglass:'<path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+  pause:'<circle cx="12" cy="12" r="10"/><path d="M10 15V9M14 15V9"/>',
+  refresh:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/>',
+  scale:'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  laptop:'<path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  tv:'<rect width="20" height="15" x="2" y="7" rx="2"/><path d="m17 2-5 5-5-5"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  install:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 7v7M9 11l3 3 3-3M10 18h4"/>',
+  filter:'<path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/>',
+  printer:'<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>',
+  thermo:'<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  baby:'<path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/>',
+  bus:'<path d="M8 6v6M15 6v6M2 12h19.6M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>',
+  map:'<path d="M14.1 5.55a2 2 0 0 0 1.79 0l3.66-1.83A1 1 0 0 1 21 4.62v12.76a1 1 0 0 1-.55.9l-4.55 2.27a2 2 0 0 1-1.79 0l-4.21-2.1a2 2 0 0 0-1.79 0l-3.66 1.83A1 1 0 0 1 3 19.38V6.62a1 1 0 0 1 .55-.9l4.55-2.27a2 2 0 0 1 1.79 0z"/><path d="M15 5.76v15M9 3.24v15"/>',
+  wifioff:'<path d="M12 20h.01M8.5 16.43a5 5 0 0 1 7 0M2 8.82a15 15 0 0 1 4.17-2.65M10.66 5c4.01-.36 8.14.9 11.34 3.76M16.85 11.25a10 10 0 0 1 2.22 1.68M5 13a10 10 0 0 1 5.24-2.76M2 2l20 20"/>',
+  right:'<path d="m9 18 6-6-6-6"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  maximize:'<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>'
+};
+const ic = n => '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || ICONS.globe) + '</svg>';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[ch]));
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+const BLN = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200); }
+function openModal(inner, cls) {
+  closeModal();
+  const m = document.createElement('div'); m.className = 'mdl' + (cls ? ' ' + cls : ''); m.id = 'mdl';
+  m.innerHTML = '<div class="mdl-bg" data-close></div><div class="mdl-box" role="dialog" aria-modal="true">' + inner + '</div>';
+  $('#app').appendChild(m);
+  m.addEventListener('click', e => { if (e.target.closest('[data-close]')) { e.preventDefault(); closeModal(); } });
+  requestAnimationFrame(() => m.classList.add('show'));
+  const f = m.querySelector('input:not([type=hidden]):not([type=radio]):not([type=checkbox]),select,textarea');
+  if (f && matchMedia('(pointer:fine)').matches) setTimeout(() => f.focus(), 60);
+  return m;
+}
+function closeModal() { const m = $('#mdl'); if (m) m.remove(); }
+document.querySelectorAll('[data-ic]').forEach(el => { el.outerHTML = ic(el.dataset.ic); });
+
+/* Pautan ke eBOARD (pilihan, dalam config.js) */
+if (window.EBOARD_URL) { const l = $('#eboardLink'); l.href = window.EBOARD_URL; l.hidden = false; }
+
+/* Tema */
+const html = document.documentElement;
+function applyTheme(t) { html.setAttribute('data-theme', t); $('#themeBtn').innerHTML = ic(t === 'dark' ? 'sun' : 'moon'); }
+let theme = store.get('pg-theme', null) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme(theme);
+$('#themeBtn').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(theme); store.set('pg-theme', theme); };
+
+/* Penghala: #/pergerakan[/minggu|saya|admin|tv] */
+function route() { const p = location.hash.replace(/^#\/?/, '').split('/'); return {v: p[0] || '', a: p[1] || ''}; }
+function go(path) { if (location.hash !== '#/' + path) location.hash = '/' + path; else render(); }
+function render() {
+  const r = route();
+  if (r.v !== 'pergerakan') { location.replace('#/pergerakan'); return; }
+  html.classList.remove('tv-on');
+  closeModal();
+  $('#view').outerHTML = '<main id="view">' + KB.view(r.a) + '</main>';
+  document.title = KB.title() + ' · Pergerakan Staf JTMK';
+  window.scrollTo(0, 0);
+  KB.bind();
+}
+addEventListener('hashchange', render);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* PWA: pasang aplikasi & kemas kini */
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isMobile = isIOS || /android/i.test(navigator.userAgent);
+let installEvt = null;
+function syncInstall() { $('#installBtn').classList.toggle('show', !standalone() && (!!installEvt || isMobile)); }
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; syncInstall(); });
+addEventListener('appinstalled', () => { installEvt = null; syncInstall(); toast('✓ Pergerakan Staf dipasang pada peranti ini'); });
+$('#installBtn').onclick = async () => {
+  if (installEvt) { installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; syncInstall(); return; }
+  const langkah = isIOS
+    ? '<p class="hint" style="margin:0">Buka laman ini dalam <b>Safari</b>, kemudian:</p><ol><li>Tekan butang <b>Kongsi</b> ' + ic('share') + ' di bawah skrin.</li><li>Pilih <b>Tambah ke Skrin Utama</b>.</li><li>Tekan <b>Tambah</b>.</li></ol>'
+    : '<p class="hint" style="margin:0">Buka laman ini dalam <b>Chrome</b>, kemudian:</p><ol><li>Tekan menu <b>⋮</b> di penjuru kanan atas.</li><li>Pilih <b>Pasang aplikasi</b> atau <b>Tambah ke skrin utama</b>.</li><li>Tekan <b>Pasang</b>.</li></ol>';
+  openModal('<div class="guide"><h2>Pasang Pergerakan Staf</h2>' + langkah + '<button class="ok" data-close>Faham</button></div>');
+};
+syncInstall();
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  let mahuMuat = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (mahuMuat) location.reload(); });
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    const tawar = w => {
+      if ($('#upd')) return;
+      const d = document.createElement('div'); d.className = 'upd'; d.id = 'upd';
+      d.innerHTML = '<span>Versi baharu tersedia</span><button>Muat semula</button>';
+      d.querySelector('button').onclick = () => { mahuMuat = true; w.postMessage('skipWaiting'); d.remove(); };
+      document.body.appendChild(d);
+    };
+    if (reg.waiting && navigator.serviceWorker.controller) tawar(reg.waiting);
+    reg.addEventListener('updatefound', () => { const w = reg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) tawar(w); }); });
+    setInterval(() => reg.update().catch(() => {}), 30 * 60 * 1000);
+  }).catch(() => {});
+}
+
+render();
+</script>
+</body>
+</html>

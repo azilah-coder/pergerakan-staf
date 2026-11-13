@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Pergerakan Staf JTMK",
+  "short_name": "Pergerakan",
+  "description": "Papan Pergerakan Staf JTMK, Politeknik Balik Pulau: siapa di pejabat, HBH atau di luar hari ini.",
+  "lang": "ms",
+  "dir": "ltr",
+  "start_url": "./#/pergerakan",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#15803d",
+  "background_color": "#0f2a1c",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
+  ],
+  "shortcuts": [
+    {"name": "Paparan minggu", "short_name": "Minggu", "url": "./#/pergerakan/minggu", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "Rekod saya", "short_name": "Rekod saya", "url": "./#/pergerakan/saya", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"}]}
+  ]
+}
